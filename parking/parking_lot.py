@@ -30,7 +30,7 @@ class ParkingLot:
                 vehicle = slot.get_vehicle()
 
                 if vehicle.license_plate == plate:
-                    slot.vacate()
+                    slot.unpark()
 
                     if not self._waiting_queue.empty():
                         next_v = self._waiting_queue.get()
