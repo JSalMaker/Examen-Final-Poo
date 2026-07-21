@@ -1,5 +1,8 @@
 from queue import Queue
 from datetime import datetime
+from exceptions.parking_full_error import ParkingFullError
+from exceptions.vehicle_not_found_error import VehicleNotFoundError
+
 class ParkingLot:
     def __init__(self, name: str, slots: list):
         self.name = name
