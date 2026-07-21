@@ -1,5 +1,5 @@
 from .models.vehicle import Vehicle
-from .exceptions import SlotOccupiedError
+from .exceptions.slot_occupied_error import SlotOccupiedError
 from uuid import uuid
 
 class ParkingSlot:
@@ -16,7 +16,7 @@ class ParkingSlot:
 
     def park(self, vehicle) -> bool:
         if self._is_occupied:
-            raise NotImplementedError("Puesto ocupado, intente con otro lugar")
+            raise SlotOccupiedError("Puesto ocupado, intente con otro lugar", vehicle)
     
         else:
             
