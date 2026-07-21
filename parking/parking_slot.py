@@ -4,29 +4,30 @@ from uuid import uuid
 
 class ParkingSlot:
     def __init__(self, vehicle: Vehicle):
-        self.id = str(uuid.uuid4()[:5])
-        self._vehicle = vehicle if vehicle else None
+        self._id = str(uuid.uuid1()[:5]) 
+        self._vehicle = vehicle 
         
          
     def __str__(self):
+        return ( 
         f"Parqueadero numero :{self.id}\n"
         f"Vehiculo Obtenido: {self.get_vehicle}\n"
-        f"Parqueadero Ocupado: {self.is_occupied(self)}"
-        
+        f"Parqueadero Ocupado: {self.is_occupied()}"
+        )
 
     def park(self, vehicle) -> bool:
-        if self._is_occupied:
+        if self._is_occupied():
             raise SlotOccupiedError("Puesto ocupado, intente con otro lugar", vehicle)
     
         else:
             
-                self.unpark()
+                self.vacate()
                 self.set_vehicle(vehicle)
-                print(f"El vehiculo de placas {self.vehicle.license_plate} está parqueando en el espacio {self.id}")
-                print(f"{self.vehicle.get_name}, Gracias por ocupar nuestro espacio")
+                print(f"El vehiculo de placas {self._vehicle.license_plate} está parqueando en el espacio {self._id}")
+                print(f"{self._vehicle.get_name()}, Gracias por ocupar nuestro espacio")
                 return True
             
-    def unpark(self):
+    def vacate(self):
         print(f"{self._vehicle.get_name} Muchas Gracias por su visita")
         self._vehicle = None
 

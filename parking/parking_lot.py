@@ -1,7 +1,7 @@
 from queue import Queue
-from datetime import datetime
+#from datetime import datetime
 from models.vehicle import Vehicle
-from models.ticket import Ticket
+#from models.ticket import Ticket
 from parking_slot import ParkingSlot
 from exceptions.parking_full_error import ParkingFullError
 from exceptions.vehicle_not_found_error import VehicleNotFoundError
@@ -14,20 +14,20 @@ class ParkingLot:
 
     def park_vehicle(self, vehicle: Vehicle):
         for slot in self._slots:
-            if not slot.is_occupied():
+            if not slot._is_occupied():
                 slot.park(vehicle)
                 
-                ticket = Ticket(vehicle, slot.slot_id, entry_time)
+                #ticket = Ticket(vehicle, slot._id, entry_time)
                 
-                return ticket
+                return 
                
         self._waiting_queue.put(vehicle)
-        raise ParkingFullError("No hay cupos disponibles, se encuentra en lista de espera.")
+        raise ParkingFullError(f"No hay cupos disponibles, se encuentra en lista de espera. Parqueaderos ocupados: {len(self._slots)}")
 
 
     def exit_vehicle(self, plate: str):
         for slot in self._slots:
-            if slot.is_occupied():
+            if slot._is_occupied():
                 vehicle = slot.get_vehicle()
 
                 if vehicle.license_plate == plate:
@@ -38,7 +38,6 @@ class ParkingLot:
                         slot.park(next_v)
 
                     return
-                
         raise VehicleNotFoundError(f"El vehiculo con placa {plate} no fue encontrado.")
                     
     def available_count(self):
