@@ -1,20 +1,22 @@
 from queue import Queue
 from datetime import datetime
+from models.vehicle import Vehicle
+from models.ticket import Ticket
+from parking_slot import ParkingSlot
 from exceptions.parking_full_error import ParkingFullError
 from exceptions.vehicle_not_found_error import VehicleNotFoundError
 
 class ParkingLot:
-    def __init__(self, name: str, slots: list):
+    def __init__(self, name: str, slots: list[ParkingSlot]):
         self.name = name
         self._slots= slots
         self._waiting_queue = Queue()
 
-    def park_vehicle(self, vehicle):
+    def park_vehicle(self, vehicle: Vehicle):
         for slot in self._slots:
             if not slot.is_occupied():
                 slot.park(vehicle)
                 
-                entry_time = datetime.now()
                 ticket = Ticket(vehicle, slot.slot_id, entry_time)
                 
                 return ticket
@@ -23,7 +25,7 @@ class ParkingLot:
         raise ParkingFullError("No hay cupos disponibles, se encuentra en lista de espera.")
 
 
-    def exit_vehicle(self, plate):
+    def exit_vehicle(self, plate: str):
         for slot in self._slots:
             if slot.is_occupied():
                 vehicle = slot.get_vehicle()
