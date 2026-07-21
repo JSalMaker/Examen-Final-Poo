@@ -1,4 +1,4 @@
-from ..models.vehicle import Vehicle
+from models.vehicle import Vehicle
 class SlotOccupiedError(Exception):
     def __init__(self,message, vehicle: Vehicle):
         super().__init__(message)

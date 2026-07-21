@@ -1,5 +1,5 @@
 class VehicleNotFoundError(Exception):
     def __init__(self,message):
-        super(),self.__init__(message)
+        super().__init__(message)
     
     

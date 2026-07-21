@@ -1,8 +1,8 @@
 from models.vehicle import Vehicle
 
 class Motorcycle(Vehicle):
-    def __init__(self, license_plate: str, owner_name: str, sidecar: bool):
-        super().__init__(license_plate, owner_name)
+    def __init__(self, license_plate: str, owner_name: str, is_member:bool,  sidecar: bool):
+        super().__init__(license_plate, owner_name, is_member)
         self.sidecar = sidecar
 
     def get_type(self):
