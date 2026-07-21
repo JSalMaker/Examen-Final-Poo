@@ -1,5 +1,4 @@
 from queue import Queue
-from datetime import datetime
 from models.vehicle import Vehicle
 from models.ticket import Ticket
 from parking_slot import ParkingSlot
