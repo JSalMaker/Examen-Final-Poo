@@ -1,5 +1,4 @@
 from queue import Queue
-#from datetime import datetime
 from models.vehicle import Vehicle
 #from models.ticket import Ticket
 from parking_slot import ParkingSlot
@@ -31,7 +30,7 @@ class ParkingLot:
                 vehicle = slot.get_vehicle()
 
                 if vehicle.license_plate == plate:
-                    slot.vacate()
+                    slot.unpark()
 
                     if not self._waiting_queue.empty():
                         next_v = self._waiting_queue.get()
