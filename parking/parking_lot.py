@@ -35,6 +35,7 @@ class ParkingLot:
                     if not self._waiting_queue.empty():
                         next_v = self._waiting_queue.get()
                         slot.park(next_v)
+                        print(f"El vehículo con placa {next_v.license_plate} ha sido parqueado en el puesto {slot.slot_id}")
 
                     return
         raise VehicleNotFoundError(f"El vehiculo con placa {plate} no fue encontrado.")
