@@ -13,7 +13,7 @@ El problema a resolver, es un problema de organización el cual es enfocado al t
 
 ---
 
-## UML: Problema 3
+## UML
 
 Este es el UML del problema de parqueaderos del centro comercial, el UML consta de clases con sus respectivos atributos y métodos, relaciones entre clases y multiplicidad. 
 Se busca con el UML crear la base lógica del código a generar.
