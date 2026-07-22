@@ -86,6 +86,7 @@ direction TB
 ## Explicacion del codigo:
 
 Para no quitarle la gracia al examen y exponerlo nosotros, en este apartado se hara una pequeña descripcion de cada parte del codigo de manera muy general y depronto algunas cosas especificas para poder ayudarnos a la hora de exponer el codigo.
+---
 
 ### Vehiculo, carro, moto
 La clase Vehiculo es la clase padre de la clase Carro y Moto. Aparte de esto, también es una clase abstracta que contiene un método abstracto (una clase abstracta no se puede instanciar directamente). Los atributos que tiene Vehículo los heredan Carro y Moto, después hace un polimorfismo en uno de sus métodos. Además de esto, la clase Vehículo tiene un atributo de ticket, que lo inicializa. Dejo por aquí la clase Vehículo; si se necesita profundizar en las demás clases, revisar las carpetas.
@@ -109,6 +110,7 @@ class Vehicle(ABC):
     def __str__(self) -> str:
         raise NotImplementedError("Las clases hijas deben implementarlo.")
 ```
+---
 ### Ticket
 Ticket guarda el vehículo, el id del cupo y la hora de entrada usando datetime.now. Usa un patrón TYPE_CHECKING para anotar tipos de Car/Motorcycle sin generar importación circular con models/car.py y models/motorcycle.py y que tambien importan Ticket. calculate_fee() diferencia la tarifa según el tipo de vehículo con isinstance, y aplica 10% de descuento si el vehículo es socio. Dejo por aquí la clase Ticket.
 
@@ -147,6 +149,8 @@ class Ticket:
         
         return (f"Cobro total: {valor_ticket}")
 ```
+---
+
 ### Parking_Slot
 
 ParkingSlot encapsula todo el comportamiento de un solo cupo, guarda su id, protege su propio estado, evita que lo ocupen mas de 1 objeto lanzando su propia excepción, genera el Ticket al parquear y libera el espacio al salir. Ahorita lo relacionaremos con la clase ParkingLot la usa como bloque de construcción para manejar el parqueadero completo. Dejo por aquí la clase Parking Slot.
@@ -199,6 +203,7 @@ class ParkingSlot:
         else: 
             return False
 ```
+---
 
 ### Parking_Lot
 
@@ -279,7 +284,38 @@ class ParkingLot:
                 yield slot._id, slot.get_vehicle()
 
 ```
+---
+## Excepciones
 
+Dentro del código se generaron 3 excepciones para el manejo del código, diremos en que consiste cada una muy por encima para profundizar mejor en la sustentación.
+- SlotOccupiedError: El cupo especifico ya tiene algún vehículo adentro.
+- ParkingFullError: No hay cupo libre en algún lado.
+- VehicleNotFoundError: No existe la placa en ningún parqueadero asignado o no hay vehículo con esa placa parqueado.
+
+``` python
+
+class ParkingFullError(Exception):
+    def __init__(self,message):
+        super().__init__(message)
+
+```
+---
+``` python
+
+from models.vehicle import Vehicle
+class SlotOccupiedError(Exception):
+    def __init__(self,message, vehicle: Vehicle):
+        super().__init__(message)
+        print(f"vehiculo de placas {vehicle.get_name()} estacionado en el slot")
+```
+---
+``` python
+
+class VehicleNotFoundError(Exception):
+    def __init__(self,message):
+        super().__init__(message)
+```
+---
 ### Cierre
 
 De parte del grupo agradecemos a cada uno de los integrantes por haber trabajado todos por un mismo propósito y habiendo trabajado de buena cada uno de los integrantes del grupo (trabajo chill con personas chill).
