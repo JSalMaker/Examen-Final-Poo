@@ -11,7 +11,7 @@ class Motorcycle(Vehicle):
     def __str__(self):
         return (
             f"Placa de la moto: {self.license_plate}\n"
-            f"Nombre del propietario; {self.get_name()}\n"
+            f"Nombre del propietario: {self.get_name()}\n"
             f"Tiene sidecar: {self.sidecar}\n"
         )
     
