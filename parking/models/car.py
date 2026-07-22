@@ -11,7 +11,7 @@ class Car(Vehicle):
     def __str__(self):
         return(
             f"Placa del carro: {self.license_plate}\n"
-            f"Nombre del propietario; {self.get_name()}\n"
+            f"Nombre del propietario: {self.get_name()}\n"
             f"Número de puertas: {self.door_number}\n"
         )
     
