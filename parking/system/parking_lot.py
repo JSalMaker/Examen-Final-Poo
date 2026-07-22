@@ -68,5 +68,6 @@ class ParkingLot:
     def occupied_vehicles(self):
         for slot in self._slots:
             if slot._is_occupied():
-                yield slot._id, slot.get_vehicle()
+                notify = f"Vehiculo Ocupado, id:{slot._id} vehiculo{slot.get_vehicle()} "
+                yield notify
     
