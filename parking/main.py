@@ -27,4 +27,9 @@ mall_centro.exit_vehicle("UCX451")
 mall_centro.exit_vehicle("XYZ999")
 mall_centro.available_count()
 
+occupieds- mall_centro.occupied_vehicles()
+
+for occupied in occupieds:
+    print(occupied)
+
 
