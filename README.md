@@ -74,18 +74,37 @@ direction TB
         +calculate_free(hours) datetime.now
     }
 
+    class Exception {
+    }
+
+    class ParkingFullError {
+    }
+
+    class SlotOccupiedError {
+    }
+
+    class  VehicleNotFoundError{
+    }
+
     VehicleAbstract <|-- Car
     VehicleAbstract <|-- Motorcycle
     VehicleAbstract --o ParkingLot
     VehicleAbstract "1" --> "1" Ticket
     ParkingSlot "1" --> "0...1" VehicleAbstract
     ParkingSlot "1...n" --* "1" ParkingLot
+    Exception <|-- ParkingFullError
+    Exception <|-- SlotOccupiedError
+    Exception <|-- VehicleNotFoundError
+    SlotOccupiedError --> VehicleAbstract
+    ParkingSlot --> SlotOccupiedError
+    ParkingLot --> VehicleNotFoundError
+    ParkingLot --> ParkingFullError
+    
 ```
 ---
 
 ## Explicacion del codigo:
-
-Para no quitarle la gracia al examen y exponerlo nosotros, en este apartado se hara una pequeña descripcion de cada parte del codigo de manera muy general y depronto algunas cosas especificas para poder ayudarnos a la hora de exponer el codigo.
+#### Para no quitarle la gracia al examen y exponerlo nosotros, en este apartado se hara una pequeña descripcion de cada parte del codigo de manera muy general y depronto algunas cosas especificas para poder ayudarnos a la hora de exponer el codigo.
 ---
 
 ### Vehiculo, carro, moto
