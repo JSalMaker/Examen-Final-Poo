@@ -50,15 +50,16 @@ direction TB
     class ParkingSlot {
         +slot_id: str 
         -vehicle: Vehicle 
-        +park(vehicle) Vehicle
-        +vacate() str
-        +is_occupied() bool
+        +park(vehicle) bool
+        +vacate()
+        +set_vehicle()
+        -is_occupied()
         +get_vehicle() 
     }
 
     class ParkingLot {
         +name: str
-        -slots: int 
+        -slots:  list[ParkingSlot] 
         -waiting_queue: bool
         +park_vehicle(vehicle)
         +exit_vehicle(plate)
@@ -67,10 +68,10 @@ direction TB
     }
 
     class Ticket {
-        +vehicle: Vehicle 
-        +slot_id: int
+        +vehicle: Car | Motorcycle
+        +slot_id: str
         +entry_time: datetime
-        +calculate_free(hours) str
+        +calculate_free(hours) datetime.now
     }
 
     VehicleAbstract <|-- Car
@@ -146,5 +147,139 @@ class Ticket:
         
         return (f"Cobro total: {valor_ticket}")
 ```
+### Parking_Slot
+
+ParkingSlot encapsula todo el comportamiento de un solo cupo, guarda su id, protege su propio estado, evita que lo ocupen mas de 1 objeto lanzando su propia excepción, genera el Ticket al parquear y libera el espacio al salir. Ahorita lo relacionaremos con la clase ParkingLot la usa como bloque de construcción para manejar el parqueadero completo. Dejo por aquí la clase Parking Slot.
+
+``` python
+
+import uuid
+from models.ticket import Ticket
+from exceptions.slot_occupied_error import SlotOccupiedError
+
+class ParkingSlot:
+    def __init__(self, id: str):
+        self._id = id
+        self._protected_ref = str(uuid.uuid1())[:5] 
+        self._vehicle = None
+        
+         
+    def __str__(self):
+        return ( 
+        f"Parqueadero numero :{self._id}\n"
+        f"Parqueadero Ocupado: {self._is_occupied()}\n" # type: ignore
+        f"{self.get_vehicle()}"
+        )
+
+    def park(self, vehicle) -> bool:
+        if self._is_occupied():
+            raise SlotOccupiedError("Puesto ocupado, intente con otro lugar", vehicle)
+    
+        else:
+            self.set_vehicle(vehicle)
+            vehicle.ticket = Ticket(vehicle, self._id)
+            print(f"El vehiculo de placas {self._vehicle.license_plate} está parqueando en el espacio {self._id}\n") # type: ignore
+            print(f"{self._vehicle.get_name()}, Gracias por ocupar nuestro espacio\n") # type: ignore
+            return True
+            
+    def vacate(self):
+        print(f"{self._vehicle.get_name()} , muchas gracias por su visita\n") # type: ignore
+        self._vehicle = None
 
 
+    def set_vehicle(self,vehicle):
+        self._vehicle = vehicle
+    
+    def get_vehicle(self):
+        return(self._vehicle)
+    
+    def _is_occupied(self):
+        if self._vehicle:
+            return True
+        else: 
+            return False
+```
+
+### Parking_Lot
+
+ParkingLot gestiona el ciclo completo del parqueadero apoyándose en los métodos que ya se definieron en el ParkingSlot, en principio el código revisa si el lugar está ocupado o no, si no está ocupado el programa lo pone en lista de espera, también le da salida a el vehículo, le asigna el tiket cuando se va a retirar y calcula su precio. ParkingLot siempre se queda revisando si hay algún cupo disponible o para darle la entrada a el próximo vehículo. Dejo por aquí la clase Parking Lot.
+
+``` python
+
+from queue import Queue
+from models.car import Car
+from models.motorcycle import Motorcycle
+from system.parking_slot import ParkingSlot
+from exceptions.parking_full_error import ParkingFullError
+from exceptions.vehicle_not_found_error import VehicleNotFoundError
+
+class ParkingLot:
+    def __init__(self, name: str, slots: list[ParkingSlot]):
+        self.name = name
+        self._slots= slots
+        self._waiting_queue: Queue[Car | Motorcycle] = Queue()
+
+    def park_vehicle(self, vehicle: Car | Motorcycle):
+        try:
+            for slot in self._slots:
+                if not slot._is_occupied():
+                    slot.park(vehicle)
+                    return vehicle.ticket
+               
+            self._waiting_queue.put(vehicle)
+            raise ParkingFullError(f"No hay cupos disponibles, se encuentra en lista de espera. Parqueaderos ocupados: {len(self._slots)}")
+        except ParkingFullError as e:
+            print (f"{e}\n")
+            
+
+
+    def exit_vehicle(self, plate: str):
+        for slot in self._slots:
+
+            if slot._is_occupied():
+                vehicle = slot.get_vehicle()
+
+                if vehicle and vehicle.license_plate == plate.upper():
+                    fee = vehicle.ticket.calculate_fee()
+                    slot.vacate()
+                    print (f"La tarifa a pagar es de {fee}")
+
+                    if not self._waiting_queue.empty():
+                        next_v = self._waiting_queue.get()
+                        slot.park(next_v)
+                        print(f"El vehículo con placa {next_v.license_plate} ha sido parqueado en el puesto {slot._id}")
+
+                    return
+        try:
+            raise VehicleNotFoundError(f"El vehiculo con placa {plate} no fue encontrado.")
+        except VehicleNotFoundError as e:
+            print(f"{e}\n")
+                    
+    def available_count(self):
+        counter = 0
+        available_slots = []
+
+        for slot in self._slots:
+            if not slot._is_occupied():
+                available_slots.append(slot._id)
+                counter +=1
+
+        print(f"Parqueaderos disponibles: {counter}")
+        if counter != 0:
+            print("Los ID de éstos son:")
+
+        for i, available_slot in enumerate(available_slots, start = 1):
+            print(i, available_slot)
+
+        return counter
+
+    def occupied_vehicles(self):
+        for slot in self._slots:
+            if slot._is_occupied():
+                yield slot._id, slot.get_vehicle()
+
+```
+
+### Cierre
+
+De parte del grupo agradecemos a cada uno de los integrantes por haber trabajado todos por un mismo propósito y habiendo trabajado de buena cada uno de los integrantes del grupo (trabajo chill con personas chill).
